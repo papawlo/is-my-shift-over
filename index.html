@@ -31,7 +31,7 @@
   }
   .wrap{ width:100%; max-width:90vh; text-align:center; }
   .eyebrow{ font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px; }
-  .day{ font-size:15px; color:var(--ink-soft); margin:0 0 28px; }
+  .day{ font-size:15px; color:var(--ink-soft); margin:28px 0 0 ; }
   .card{ border-radius:24px; padding:40px 28px; transition:background 0.4s ease; }
   .card.pink{ background:var(--pink-bg); }
   .card.green{ background:var(--green-bg); }
@@ -52,12 +52,12 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">shift status</div>
-  <div class="day" id="day-label">loading</div>
+<!--  <div class="eyebrow">shift status</div>-->
   <div class="card" id="card">
     <div class="headline" id="headline">--</div>
     <p class="sub" id="sub">--</p>
   </div>
+  <div class="day" id="day-label">loading</div>
   <div class="footer" id="footer">5:30 pm. that's the law.</div>
 </div>
 
@@ -69,25 +69,25 @@ function fmt(mins){
 function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
 var weekendPhrases = [
-  'legally required to have fun. go.',
-  'no meetings, no bosses, just vibes',
-  'monday can wait. so can your inbox',
-  'professional rester, reporting for duty',
-  'achievement unlocked: two days of freedom'
+  'Legally required to have fun. Go!',
+  'No meetings, no bosses, just vibes',
+  'Monday can wait. so can your inbox',
+  'Professional rester, reporting for duty',
+  'Achievement unlocked: two days of freedom'
 ];
 var yesPhrases = [
-  'free for {time}. why are you still on this app',
-  '{time} of freedom. flex on your coworkers',
-  'officially off the clock for {time}',
-  'you escaped {time} ago. legend.',
-  '{time} deep into doing absolutely nothing productive. respect.'
+  'Free for {time}. why are you still on this app',
+  '{time} of freedom. Flex on your coworkers',
+  'Officially off the clock for {time}',
+  'You escaped {time} ago. Legend.',
+  '{time} deep into doing absolutely nothing productive. Respect.'
 ];
 var noPhrases = [
-  'hang in there, champ. {time} of pretending left',
+  'Hang in there, champ. {time} of pretending left',
   '{time} until you are a free citizen again',
-  'still {time} to go. drink some water',
-  '{time} left. the printer believes in you',
-  '{time} more. you have got this (probably)'
+  'Still {time} to go. Drink some water',
+  '{time} left. The printer believes in you',
+  '{time} more. You have got this (probably)'
 ];
 
 var sub = document.getElementById('sub');
@@ -106,7 +106,7 @@ function render(){
   dayLabel.textContent = dayNames[day];
 
   var nowMin = h * 60 + m;
-  var endMin = 17 * 60 + 30;
+  var endMin = 17 * 60;
   var newClass, newHeadline, newSub, newFooter;
 
   if (isWeekend) {
@@ -118,7 +118,7 @@ function render(){
     newClass = 'card green';
     newHeadline = 'Yes';
     var diff = nowMin - endMin;
-    newSub = diff < 2 ? 'sweet, sweet freedom. go forth.' : pick(yesPhrases).replace('{time}', fmt(diff));
+    newSub = diff < 2 ? 'Sweet, sweet freedom. Go forth.' : pick(yesPhrases).replace('{time}', fmt(diff));
     newFooter = "5:30 pm. that's the law.";
   } else {
     newClass = 'card amber';
