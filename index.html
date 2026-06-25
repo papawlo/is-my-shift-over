@@ -4,143 +4,170 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Is the shift over?</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Inter:wght@400;500&display=swap');
-
-  :root{
-    --bg:#FBF8F3;
-    --ink:#2C2C2A;
-    --ink-soft:#76736B;
-    --pink-bg:#FBEAF0; --pink-ink:#4B1528; --pink-sub:#993556;
-    --green-bg:#EAF3DE; --green-ink:#173404; --green-sub:#3B6D11;
-    --amber-bg:#FAEEDA; --amber-ink:#412402; --amber-sub:#854F0B;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#1B1A17; --ink:#F1EFE8; --ink-soft:#A9A7A0;
-      --pink-bg:#72243E; --pink-ink:#F4C0D1; --pink-sub:#ED93B1;
-      --green-bg:#27500A; --green-ink:#C0DD97; --green-sub:#97C459;
-      --amber-bg:#633806; --amber-ink:#FAC775; --amber-sub:#EF9F27;
-    }
-  }
-  *{ box-sizing:border-box; }
-  body{
-    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background:var(--bg); color:var(--ink); font-family:'Inter', system-ui, sans-serif;
-    padding:24px;
-  }
-  .wrap{ width:100%; max-width:90vh; text-align:center; }
-  .eyebrow{ font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px; }
-  .day{ font-size:15px; color:var(--ink-soft); margin:28px 0 0 ; }
-  .card{ border-radius:24px; padding:40px 28px; transition:background 0.4s ease; }
-  .card.pink{ background:var(--pink-bg); }
-  .card.green{ background:var(--green-bg); }
-  .card.amber{ background:var(--amber-bg); }
-  .headline{ font-family:'Fredoka', sans-serif; font-weight:600; font-size:15em; margin:0 0 10px; transition:color 0.4s ease; }
-  .card.pink .headline{ color:var(--pink-ink); }
-  .card.green .headline{ color:var(--green-ink); }
-  .card.amber .headline{ color:var(--amber-ink); }
-  .sub{ font-size:15px; margin:0; min-height:20px; transition:opacity 0.3s ease, color 0.4s ease; }
-  .card.pink .sub{ color:var(--pink-sub); }
-  .card.green .sub{ color:var(--green-sub); }
-  .card.amber .sub{ color:var(--amber-sub); }
-  .footer{ margin-top:22px; font-size:13px; color:var(--ink-soft); }
-  @media (prefers-reduced-motion: reduce){
-    .card, .headline, .sub{ transition:none; }
-  }
+:root{
+  --bg1:#6a11cb;
+  --bg2:#2575fc;
+  --yes:#22c55e;
+  --no:#f59e0b;
+  --weekend:#ec4899;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  font-family:'Fredoka',sans-serif;
+  background:linear-gradient(-45deg,var(--bg1),var(--bg2),#00c6ff,#7f53ac);
+  background-size:400% 400%;
+  animation:bgMove 15s ease infinite;
+}
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.card{
+  width:min(95vw,1000px);
+  text-align:center;
+  padding:50px;
+  border-radius:40px;
+  backdrop-filter:blur(18px);
+  background:rgba(255,255,255,.15);
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  color:white;
+  animation:float 4s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+.headline{
+  font-size:clamp(5rem,18vw,12rem);
+  margin:0;
+  text-shadow:0 6px 20px rgba(0,0,0,.3);
+}
+.sub{
+  font-size:clamp(1.2rem,2vw,2rem);
+}
+.day,.footer{
+  margin-top:15px;
+  font-size:1.1rem;
+  opacity:.9;
+}
+.emoji{
+  font-size:4rem;
+  display:block;
+  animation:spin 8s linear infinite;
+}
+@keyframes spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+.confetti{
+  position:fixed;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+  from{transform:translateY(-10vh)}
+  to{transform:translateY(110vh)}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-<!--  <div class="eyebrow">shift status</div>-->
-  <div class="card" id="card">
-    <div class="headline" id="headline">--</div>
-    <p class="sub" id="sub">--</p>
-  </div>
-  <div class="day" id="day-label">loading</div>
-  <div class="footer" id="footer">5:30 pm. that's the law.</div>
+<div class="card" id="card">
+  <span class="emoji" id="emoji">⏳</span>
+  <h1 class="headline" id="headline">...</h1>
+  <p class="sub" id="sub"></p>
+<!--  <div class="day" id="day"></div>-->
+  <div class="footer" id="footer"></div>
 </div>
 
 <script>
 function fmt(mins){
-  var h = Math.floor(mins / 60), m = mins % 60;
-  return (h > 0 ? h + 'h ' : '') + m + 'm';
+  let h=Math.floor(mins/60),m=mins%60;
+  return (h?`${h}h `:'')+`${m}m`;
 }
-function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
-var weekendPhrases = [
-  'Legally required to have fun. Go!',
-  'No meetings, no bosses, just vibes',
-  'Monday can wait. so can your inbox',
-  'Professional rester, reporting for duty',
-  'Achievement unlocked: two days of freedom'
+const weekend=[
+ "🍹 Weekend mode activated",
+ "😎 Your keyboard misses you already",
+ "🎉 Time to ignore work notifications"
 ];
-var yesPhrases = [
-  'Free for {time}. why are you still on this app',
-  '{time} of freedom. Flex on your coworkers',
-  'Officially off the clock for {time}',
-  'You escaped {time} ago. Legend.',
-  '{time} deep into doing absolutely nothing productive. Respect.'
+const yes=[
+ "🚀 Freedom started {time} ago!",
+ "🍻 You've been off for {time}. Celebrate responsibly.",
+ "🎮 {time} of guilt-free procrastination."
 ];
-var noPhrases = [
-  'Hang in there, champ. {time} of pretending left',
-  '{time} until you are a free citizen again',
-  'Still {time} to go. Drink some water',
-  '{time} left. The printer believes in you',
-  '{time} more. You have got this (probably)'
+const no=[
+ "☕ Only {time} left. Keep pretending!",
+ "💪 {time} until liberation.",
+ "🖨️ The printer and you can survive {time}."
 ];
 
-var sub = document.getElementById('sub');
-var headline = document.getElementById('headline');
-var card = document.getElementById('card');
-var footer = document.getElementById('footer');
-var dayLabel = document.getElementById('day-label');
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+
+function confetti(){
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.animationDuration=(3+Math.random()*5)+'s';
+    c.style.background=`hsl(${Math.random()*360},90%,60%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),8000);
+  }
+}
 
 function render(){
-  var now = new Date();
-  var day = now.getDay();
-  var isWeekend = (day === 0 || day === 6);
-  var h = now.getHours(), m = now.getMinutes();
+  const now=new Date();
+  const day=now.getDay();
+  const mins=now.getHours()*60+now.getMinutes();
+  const end=17*60+30;
 
-  var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  dayLabel.textContent = dayNames[day];
+  document.getElementById('day').textContent=now.toLocaleDateString(undefined,{weekday:'long'});
 
-  var nowMin = h * 60 + m;
-  var endMin = 17 * 60;
-  var newClass, newHeadline, newSub, newFooter;
+  let headline,sub,emoji,footer;
 
-  if (isWeekend) {
-    newClass = 'card pink';
-    newHeadline = "It's the weekend!";
-    newSub = pick(weekendPhrases);
-    newFooter = 'monday is a rumor for now';
-  } else if (nowMin >= endMin) {
-    newClass = 'card green';
-    newHeadline = 'Yes';
-    var diff = nowMin - endMin;
-    newSub = diff < 2 ? 'Sweet, sweet freedom. Go forth.' : pick(yesPhrases).replace('{time}', fmt(diff));
-    newFooter = "5:30 pm. that's the law.";
-  } else {
-    newClass = 'card amber';
-    newHeadline = 'No';
-    var diff2 = endMin - nowMin;
-    newSub = pick(noPhrases).replace('{time}', fmt(diff2));
-    newFooter = "5:30 pm. that's the law.";
+  if(day===0||day===6){
+    headline="WEEKEND!";
+    sub=pick(weekend);
+    emoji="🎉";
+    footer="Monday cannot hurt you here.";
+    confetti();
+  }else if(mins>=end){
+    headline="YES!";
+    sub=pick(yes).replace('{time}',fmt(mins-end));
+    emoji="🍻";
+    footer="Clocked out. Mission accomplished.";
+    confetti();
+  }else{
+    headline="NO 😭";
+    sub=pick(no).replace('{time}',fmt(end-mins));
+    emoji="⏳";
+    footer="Keep calm and refresh later.";
   }
 
-  card.className = newClass;
-  headline.textContent = newHeadline;
-  footer.textContent = newFooter;
-
-  sub.style.opacity = 0;
-  setTimeout(function(){
-    sub.textContent = newSub;
-    sub.style.opacity = 1;
-  }, 200);
+  headlineEl.textContent=headline;
+  subEl.textContent=sub;
+  emojiEl.textContent=emoji;
+  footerEl.textContent=footer;
 }
 
+const headlineEl=document.getElementById('headline');
+const subEl=document.getElementById('sub');
+const emojiEl=document.getElementById('emoji');
+const footerEl=document.getElementById('footer');
+
 render();
-setInterval(render, 30000);
+setInterval(render,30000);
 </script>
 </body>
 </html>
