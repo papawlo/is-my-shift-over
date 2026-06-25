@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is the shift over?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Inter:wght@400;500&display=swap');
+
+  :root{
+    --bg:#FBF8F3;
+    --ink:#2C2C2A;
+    --ink-soft:#76736B;
+    --pink-bg:#FBEAF0; --pink-ink:#4B1528; --pink-sub:#993556;
+    --green-bg:#EAF3DE; --green-ink:#173404; --green-sub:#3B6D11;
+    --amber-bg:#FAEEDA; --amber-ink:#412402; --amber-sub:#854F0B;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1B1A17; --ink:#F1EFE8; --ink-soft:#A9A7A0;
+      --pink-bg:#72243E; --pink-ink:#F4C0D1; --pink-sub:#ED93B1;
+      --green-bg:#27500A; --green-ink:#C0DD97; --green-sub:#97C459;
+      --amber-bg:#633806; --amber-ink:#FAC775; --amber-sub:#EF9F27;
+    }
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); color:var(--ink); font-family:'Inter', system-ui, sans-serif;
+    padding:24px;
+  }
+  .wrap{ width:100%; max-width:90vh; text-align:center; }
+  .eyebrow{ font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px; }
+  .day{ font-size:15px; color:var(--ink-soft); margin:0 0 28px; }
+  .card{ border-radius:24px; padding:40px 28px; transition:background 0.4s ease; }
+  .card.pink{ background:var(--pink-bg); }
+  .card.green{ background:var(--green-bg); }
+  .card.amber{ background:var(--amber-bg); }
+  .headline{ font-family:'Fredoka', sans-serif; font-weight:600; font-size:15em; margin:0 0 10px; transition:color 0.4s ease; }
+  .card.pink .headline{ color:var(--pink-ink); }
+  .card.green .headline{ color:var(--green-ink); }
+  .card.amber .headline{ color:var(--amber-ink); }
+  .sub{ font-size:15px; margin:0; min-height:20px; transition:opacity 0.3s ease, color 0.4s ease; }
+  .card.pink .sub{ color:var(--pink-sub); }
+  .card.green .sub{ color:var(--green-sub); }
+  .card.amber .sub{ color:var(--amber-sub); }
+  .footer{ margin-top:22px; font-size:13px; color:var(--ink-soft); }
+  @media (prefers-reduced-motion: reduce){
+    .card, .headline, .sub{ transition:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">shift status</div>
+  <div class="day" id="day-label">loading</div>
+  <div class="card" id="card">
+    <div class="headline" id="headline">--</div>
+    <p class="sub" id="sub">--</p>
+  </div>
+  <div class="footer" id="footer">5:30 pm. that's the law.</div>
+</div>
+
+<script>
+function fmt(mins){
+  var h = Math.floor(mins / 60), m = mins % 60;
+  return (h > 0 ? h + 'h ' : '') + m + 'm';
+}
+function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+var weekendPhrases = [
+  'legally required to have fun. go.',
+  'no meetings, no bosses, just vibes',
+  'monday can wait. so can your inbox',
+  'professional rester, reporting for duty',
+  'achievement unlocked: two days of freedom'
+];
+var yesPhrases = [
+  'free for {time}. why are you still on this app',
+  '{time} of freedom. flex on your coworkers',
+  'officially off the clock for {time}',
+  'you escaped {time} ago. legend.',
+  '{time} deep into doing absolutely nothing productive. respect.'
+];
+var noPhrases = [
+  'hang in there, champ. {time} of pretending left',
+  '{time} until you are a free citizen again',
+  'still {time} to go. drink some water',
+  '{time} left. the printer believes in you',
+  '{time} more. you have got this (probably)'
+];
+
+var sub = document.getElementById('sub');
+var headline = document.getElementById('headline');
+var card = document.getElementById('card');
+var footer = document.getElementById('footer');
+var dayLabel = document.getElementById('day-label');
+
+function render(){
+  var now = new Date();
+  var day = now.getDay();
+  var isWeekend = (day === 0 || day === 6);
+  var h = now.getHours(), m = now.getMinutes();
+
+  var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  dayLabel.textContent = dayNames[day];
+
+  var nowMin = h * 60 + m;
+  var endMin = 17 * 60 + 30;
+  var newClass, newHeadline, newSub, newFooter;
+
+  if (isWeekend) {
+    newClass = 'card pink';
+    newHeadline = "It's the weekend!";
+    newSub = pick(weekendPhrases);
+    newFooter = 'monday is a rumor for now';
+  } else if (nowMin >= endMin) {
+    newClass = 'card green';
+    newHeadline = 'Yes';
+    var diff = nowMin - endMin;
+    newSub = diff < 2 ? 'sweet, sweet freedom. go forth.' : pick(yesPhrases).replace('{time}', fmt(diff));
+    newFooter = "5:30 pm. that's the law.";
+  } else {
+    newClass = 'card amber';
+    newHeadline = 'No';
+    var diff2 = endMin - nowMin;
+    newSub = pick(noPhrases).replace('{time}', fmt(diff2));
+    newFooter = "5:30 pm. that's the law.";
+  }
+
+  card.className = newClass;
+  headline.textContent = newHeadline;
+  footer.textContent = newFooter;
+
+  sub.style.opacity = 0;
+  setTimeout(function(){
+    sub.textContent = newSub;
+    sub.style.opacity = 1;
+  }, 200);
+}
+
+render();
+setInterval(render, 30000);
+</script>
+</body>
+</html>
