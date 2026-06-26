@@ -85,10 +85,6 @@
   </style>
 </head>
 <body>
-<div class="confetti" style="    left: 16vw;
-    background: hsl(125.9747976072398, 90%, 60%);
-
-    top: -32px;"></div>
 <div class="card" id="card">
   <span class="emoji" id="emoji">⏳</span>
   <h1 class="headline" id="headline">...</h1>
@@ -121,7 +117,7 @@
 
   var party_count = 200;
   var party_defaults = {
-    origin: { y: 0.7 }
+    origin: { y: 0.7 },
   };
 
   function pick(a) {return a[Math.floor(Math.random() * a.length)];}
@@ -159,9 +155,10 @@
     confetti({
       ...party_defaults,
       ...opts,
-      particleCount: Math.floor(party_count * particleRatio)
+      particleCount: Math.floor(party_count * particleRatio),
     });
   }
+
   function confettis() {
     fire(0.25, {
       spread: 26,
@@ -173,13 +170,13 @@
     fire(0.35, {
       spread: 100,
       decay: 0.91,
-      scalar: 0.8
+      scalar: 0.8,
     });
     fire(0.1, {
       spread: 120,
       startVelocity: 25,
       decay: 0.92,
-      scalar: 1.2
+      scalar: 1.2,
     });
     fire(0.1, {
       spread: 120,
