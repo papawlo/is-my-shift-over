@@ -100,10 +100,10 @@
   }
 
   const friday = [
-    "🔥 O expediente acabou. Bora pro happy hour! 🍻",
+    '🔥 O expediente acabou. Bora pro happy hour! 🍻',
     '🍻 Hora de esquecer o Teams, o Outlook e qualquer reunião!',
     '🍻 Time to close the laptop and disappear until Monday!',
-    '🍺 Enjoy the weekend. Emails can wait until Monday.'
+    '🍺 Enjoy the weekend. Emails can wait until Monday.',
   ];
   const weekend = [
     '🍹 Weekend mode activated',
@@ -118,14 +118,14 @@
   const no = [
     '☕ Only {time} left. Keep pretending!',
     '💪 {time} until liberation.',
-    '🖨️ The printer and you can survive {time}.',
+    '🎖️ You can survive, champ {time}.',
   ];
 
   const weekend_footer = [
     '🍹 Aproveita o fim de semana!',
     '😎 Clocked out. Mission accomplished.',
     '🎉 Segunda-feira é problema do seu eu do futuro.',
-    '🚫 Out of Office mode activated.'
+    '🚫 Out of Office mode activated.',
   ];
 
   var party_count = 200;
@@ -186,10 +186,11 @@
       confettis();
     } else if (day === 5 && mins >= end) { // Friday after 5pm
       headline = '#SEXTOU, NEGADA!';
-      sub = '🍻 Hora de esquecer o Teams, o Outlook e qualquer reunião!';
-      emoji = '💃';
-      footer = 'Aproveita o fim de semana!';
-      confettis();
+      sub = pick(friday);
+      emoji = '🎉';
+      footer = pick(weekend_footer);
+      setTimeout(confettis, 300);
+      setTimeout(confettis, 600);
 
     } else if (mins >= end) {
       headline = 'YES!';
