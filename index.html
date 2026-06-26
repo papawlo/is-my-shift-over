@@ -99,6 +99,12 @@
     return (h ? `${h}h ` : '') + `${m}m`;
   }
 
+  const friday = [
+    "🔥 O expediente acabou. Bora pro happy hour! 🍻",
+    '🍻 Hora de esquecer o Teams, o Outlook e qualquer reunião!',
+    '🍻 Time to close the laptop and disappear until Monday!',
+    '🍺 Enjoy the weekend. Emails can wait until Monday.'
+  ];
   const weekend = [
     '🍹 Weekend mode activated',
     '😎 Your keyboard misses you already',
@@ -115,41 +121,19 @@
     '🖨️ The printer and you can survive {time}.',
   ];
 
+  const weekend_footer = [
+    '🍹 Aproveita o fim de semana!',
+    '😎 Clocked out. Mission accomplished.',
+    '🎉 Segunda-feira é problema do seu eu do futuro.',
+    '🚫 Out of Office mode activated.'
+  ];
+
   var party_count = 200;
   var party_defaults = {
     origin: { y: 0.7 },
   };
 
   function pick(a) {return a[Math.floor(Math.random() * a.length)];}
-
-  // Confetti vanilla
-  // function confetti() {
-  //   const min_size=8;
-  //   const max_size=28;
-  //   for (let i = 0; i < 15; i++) {
-  //     const c = document.createElement('div');
-  //     const c_confetti_size = Math.floor(Math.random() * max_size) + min_size;
-  //     c.className = 'confetti';
-  //     c.style.width = c_confetti_size + 'px';
-  //     c.style.height = c_confetti_size + 'px';
-  //     c.style.left = Math.random() * 100 + 'vw';
-  //     c.style.animationDuration = (3 + Math.random() * 5) + 's';
-  //     c.style.background = `hsl(${Math.random() * 360},90%,60%)`;
-  //     document.body.appendChild(c);
-  //     setTimeout(() => c.remove(), 8000);
-  //
-  //     const b = document.createElement('div');
-  //     const b_confetti_size = Math.floor(Math.random() * max_size) + min_size;
-  //     b.className = 'confetti';
-  //     b.style.left = Math.random() * 100 + 'vw';
-  //     b.style.width = b_confetti_size + 'px';
-  //     b.style.height = b_confetti_size + 'px';
-  //     b.style.animationDuration = (3 + Math.random() * 5) + 's';
-  //     b.style.background = `hsl(${Math.random() * 360},90%,60%)`;
-  //     document.body.prepend(b);
-  //     setTimeout(() => b.remove(), 8000);
-  //   }
-  // }
 
   function fire(particleRatio, opts) {
     confetti({
@@ -200,6 +184,13 @@
       emoji = '🎉';
       footer = 'Monday cannot hurt you here.';
       confettis();
+    } else if (day === 5 && mins >= end) { // Friday after 5pm
+      headline = '#SEXTOU, NEGADA!';
+      sub = '🍻 Hora de esquecer o Teams, o Outlook e qualquer reunião!';
+      emoji = '💃';
+      footer = 'Aproveita o fim de semana!';
+      confettis();
+
     } else if (mins >= end) {
       headline = 'YES!';
       sub = pick(yes).replace('{time}', fmt(mins - end));
