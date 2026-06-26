@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Is the shift over?</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
   <style>
     :root {
       --bg1: #6a11cb;
@@ -74,14 +76,19 @@
       height: 12px;
       border-radius: 50%;
       animation: fall linear forwards;
+      top: -12px;
     }
     @keyframes fall {
-      from {transform: translateY(-10vh)}
+      from {transform: translateY(-12px)}
       to {transform: translateY(110vh)}
     }
   </style>
 </head>
 <body>
+<div class="confetti" style="    left: 16vw;
+    background: hsl(125.9747976072398, 90%, 60%);
+
+    top: -32px;"></div>
 <div class="card" id="card">
   <span class="emoji" id="emoji">⏳</span>
   <h1 class="headline" id="headline">...</h1>
@@ -112,25 +119,79 @@
     '🖨️ The printer and you can survive {time}.',
   ];
 
+  var party_count = 200;
+  var party_defaults = {
+    origin: { y: 0.7 }
+  };
+
   function pick(a) {return a[Math.floor(Math.random() * a.length)];}
 
-  function confetti() {
-    for (let i = 0; i < 30; i++) {
-      const c = document.createElement('div');
-      c.className = 'confetti';
-      c.style.left = Math.random() * 100 + 'vw';
-      c.style.animationDuration = (3 + Math.random() * 5) + 's';
-      c.style.background = `hsl(${Math.random() * 360},90%,60%)`;
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 8000);
-    }
+  // Confetti vanilla
+  // function confetti() {
+  //   const min_size=8;
+  //   const max_size=28;
+  //   for (let i = 0; i < 15; i++) {
+  //     const c = document.createElement('div');
+  //     const c_confetti_size = Math.floor(Math.random() * max_size) + min_size;
+  //     c.className = 'confetti';
+  //     c.style.width = c_confetti_size + 'px';
+  //     c.style.height = c_confetti_size + 'px';
+  //     c.style.left = Math.random() * 100 + 'vw';
+  //     c.style.animationDuration = (3 + Math.random() * 5) + 's';
+  //     c.style.background = `hsl(${Math.random() * 360},90%,60%)`;
+  //     document.body.appendChild(c);
+  //     setTimeout(() => c.remove(), 8000);
+  //
+  //     const b = document.createElement('div');
+  //     const b_confetti_size = Math.floor(Math.random() * max_size) + min_size;
+  //     b.className = 'confetti';
+  //     b.style.left = Math.random() * 100 + 'vw';
+  //     b.style.width = b_confetti_size + 'px';
+  //     b.style.height = b_confetti_size + 'px';
+  //     b.style.animationDuration = (3 + Math.random() * 5) + 's';
+  //     b.style.background = `hsl(${Math.random() * 360},90%,60%)`;
+  //     document.body.prepend(b);
+  //     setTimeout(() => b.remove(), 8000);
+  //   }
+  // }
+
+  function fire(particleRatio, opts) {
+    confetti({
+      ...party_defaults,
+      ...opts,
+      particleCount: Math.floor(party_count * particleRatio)
+    });
+  }
+  function confettis() {
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+    fire(0.2, {
+      spread: 60,
+    });
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
   }
 
   function render() {
     const now = new Date();
     const day = now.getDay();
     const mins = now.getHours() * 60 + now.getMinutes();
-    const end = 17 * 60 + 30;
+    const end = day != 5 ? (17 * 60 + 30) : 17 * 60;
 
     document.getElementById('day').textContent = now.toLocaleDateString(undefined, { weekday: 'long' });
 
@@ -141,13 +202,13 @@
       sub = pick(weekend);
       emoji = '🎉';
       footer = 'Monday cannot hurt you here.';
-      confetti();
+      confettis();
     } else if (mins >= end) {
       headline = 'YES!';
       sub = pick(yes).replace('{time}', fmt(mins - end));
       emoji = '🍻';
       footer = 'Clocked out. Mission accomplished.';
-      confetti();
+      confettis();
     } else {
       headline = 'NO 😭';
       sub = pick(no).replace('{time}', fmt(end - mins));
