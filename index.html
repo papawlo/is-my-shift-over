@@ -64,6 +64,8 @@
     .emoji {
       font-size: 4rem;
       display: block;
+    }
+    .spin{
       animation: spin 8s linear infinite;
     }
     @keyframes spin {
@@ -82,11 +84,30 @@
       from {transform: translateY(-12px)}
       to {transform: translateY(110vh)}
     }
+
+    .hithere {
+      animation: hithere 3s ease infinite;
+    }
+    @keyframes hithere {
+      30% { transform: scale(1.2); }
+      40%, 60% { transform: rotate(-20deg) scale(1.2); }
+      50% { transform: rotate(20deg) scale(1.2); }
+      70% { transform: rotate(0deg) scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .bounce2 {
+      animation: bounce2 2s ease infinite;
+    }
+    @keyframes bounce2 {
+    	0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    	40% {transform: translateY(-30px);}
+    	60% {transform: translateY(-15px);}
+    }
   </style>
 </head>
 <body>
 <div class="card" id="card">
-  <span class="emoji" id="emoji">⏳</span>
+  <span class="emoji spin" id="emoji">⏳</span>
   <h1 class="headline" id="headline">...</h1>
   <p class="sub" id="sub"></p>
   <div class="day" id="day" style="display:none"></div>
@@ -182,12 +203,14 @@
       headline = 'WEEKEND!';
       sub = pick(weekend);
       emoji = '🎉';
+      emojiClass='bounce';
       footer = 'Monday cannot hurt you here.';
       confettis();
     } else if (day === 5 && mins >= end) { // Friday after 5pm
       headline = '#SEXTOU, NEGADA!';
       sub = pick(friday);
       emoji = '🎉';
+      emojiClass='hithere';
       footer = pick(weekend_footer);
       setTimeout(confettis, 300);
       setTimeout(confettis, 600);
@@ -196,6 +219,7 @@
       headline = 'YES!';
       sub = pick(yes).replace('{time}', fmt(mins - end));
       emoji = '🍻';
+      emojiClass='hithere';
       footer = 'Clocked out. Mission accomplished.';
       confettis();
     } else {
@@ -203,11 +227,13 @@
       sub = pick(no).replace('{time}', fmt(end - mins));
       emoji = '⏳';
       footer = 'Keep calm and refresh later.';
+      emojiClass='spin';
     }
 
     headlineEl.textContent = headline;
     subEl.textContent = sub;
     emojiEl.textContent = emoji;
+    emojiEl.classList.toggle(emojiClass);
     footerEl.textContent = footer;
   }
 
